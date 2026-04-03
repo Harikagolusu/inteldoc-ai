@@ -24,8 +24,13 @@ async def analyze_text(text: str) -> Dict[str, Any]:
     default_result = {
         "summary": "AI summary currently unavailable due to missing API key or error.",
         "sentiment": "neutral",
-        "category": "Uncategorized",
-        "keywords": []
+        "entities": {
+            "persons": [],
+            "organizations": [],
+            "dates": [],
+            "money": [],
+            "locations": []
+        }
     }
 
     if not text:
@@ -41,23 +46,16 @@ async def analyze_text(text: str) -> Dict[str, Any]:
         text = text[:max_length] + "... (Text truncated to meet performance constraints)"
 
     prompt = f"""
-    Please read the following text and provide:
-    1. A concise summary in 3-4 lines. Do not exceed 4 lines.
-    2. The overall sentiment of the text. Choose ONLY one of: 'positive', 'negative', or 'neutral'.
-    3. Document category (e.g., Invoice, Report, Resume, Email, Article, General).
-    4. Top 3-5 key topics/keywords from the text.
+Analyze the following text and return JSON with:
+- summary (3-4 lines)
+- entities: persons, organizations, dates, money, locations
+- sentiment: positive/negative/neutral
 
-    Return ONLY a valid JSON object with the exact following structure and keys, without markdown formatting or code blocks:
-    {{
-      "summary": "your concise summary here",
-      "sentiment": "positive/negative/neutral",
-      "category": "document category",
-      "keywords": ["keyword1", "keyword2", "keyword3"]
-    }}
+Return ONLY valid JSON.
 
-    Text to analyze:
-    {text}
-    """
+Text:
+{text}
+"""
 
     try:
         # We can use gemini-1.5-pro or gemini-2.5-flash. Using the default available ones.
@@ -78,9 +76,8 @@ async def analyze_text(text: str) -> Dict[str, Any]:
         
         return {
             "summary": parsed.get("summary", "Summary unavailable."),
-            "sentiment": parsed.get("sentiment", "neutral").lower(),
-            "category": parsed.get("category", "General"),
-            "keywords": parsed.get("keywords", [])
+            "sentiment": str(parsed.get("sentiment", "neutral")).lower(),
+            "entities": parsed.get("entities", default_result["entities"])
         }
         
     except Exception as e:

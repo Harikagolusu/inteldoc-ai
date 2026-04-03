@@ -5,7 +5,6 @@ from pydantic import BaseModel
 
 from src.services.extractor import extract_text_from_file
 from src.utils.cleaner import clean_extracted_text
-from src.services.nlp_service import extract_entities, get_empty_entities
 from src.services.ai_service import analyze_text, configure_gemini
 
 router = APIRouter()
@@ -83,17 +82,20 @@ async def analyze_document(file: UploadFile = File(None), _ = Depends(verify_api
             return {
                 "file_type": file_type_str,
                 "summary": "No text could be extracted from the provided file.",
-                "entities": get_empty_entities(),
+                "entities": {
+                    "persons": [],
+                    "organizations": [],
+                    "dates": [],
+                    "money": [],
+                    "locations": []
+                },
                 "sentiment": "neutral"
             }
             
         # 2. Clean Text
         cleaned_text = clean_extracted_text(raw_text)
         
-        # 3. Extract Entities with NLP (spaCy)
-        entities = await extract_entities(cleaned_text)
-        
-        # 4. Process AI Summary & Sentiment (Gemini)
+        # 3. Process AI Summary, Sentiment, & Entities (Gemini)
         ai_result = await analyze_text(cleaned_text)
         
         sentiment_val = str(ai_result.get("sentiment", "neutral")).lower()
@@ -103,7 +105,13 @@ async def analyze_document(file: UploadFile = File(None), _ = Depends(verify_api
         return {
             "file_type": file_type_str,
             "summary": ai_result.get("summary", "Summary unavailable")[:500],
-            "entities": entities,
+            "entities": ai_result.get("entities", {
+                    "persons": [],
+                    "organizations": [],
+                    "dates": [],
+                    "money": [],
+                    "locations": []
+            }),
             "sentiment": sentiment_val
         }
         

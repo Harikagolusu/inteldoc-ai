@@ -7,13 +7,12 @@
     <img src="https://img.shields.io/badge/Python-3.9+-blue.svg" alt="Python 3.9+" />
     <img src="https://img.shields.io/badge/FastAPI-005571?style=flat&logo=fastapi" alt="FastAPI" />
     <img src="https://img.shields.io/badge/Google_Gemini-8E75B2?style=flat&logo=googlebard&logoColor=white" alt="Gemini" />
-    <img src="https://img.shields.io/badge/spaCy-09A3D5?style=flat&logo=spacy&logoColor=white" alt="spaCy" />
   </p>
 </div>
 
 <br />
 
-IntelDoc AI is an end-to-end intelligent document processing system built for modern hackathons. It seamlessly ingests PDFs, DOCX files, and Images, extracts robust internal text, and pushes it through a dual Natural Language Processing logic system (spaCy NER & Google Gemini 2.5 Flash) to generate comprehensive executive summaries, sentiment ratings, categorized tags, and dynamic keywords. 
+IntelDoc AI is an end-to-end intelligent document processing system built for modern hackathons. It seamlessly ingests PDFs, DOCX files, and Images, extracts robust internal text, and pushes it through an advanced AI logic system (Google Gemini 2.5 Flash) to generate comprehensive executive summaries, sentiment ratings, and categorized entity tags.
 
 The application pairs a highly modular, asynchronous **FastAPI backend** with a stunning **dark-mode glassmorphism frontend dashboard**.
 
@@ -23,7 +22,7 @@ The application pairs a highly modular, asynchronous **FastAPI backend** with a 
 - **Universally Compatible Extraction**: Ingests `.pdf`, `.docx`, and `.jpg/.png` files. Utilizes Tesseract OCR for physical image text extraction.
 - **Smart Document Categorization**: Google Gemini natively evaluates context to classify your document (e.g., _Invoice, Resume, Report, Meeting Notes_).
 - **Executive Summaries & Sentiment**: Automatic reduction of wall-of-text documents into crisp 3-4 sentence AI summaries alongside psychological sentiment analysis (Positive/Neutral/Negative).
-- **Dual-Model Entities (NER)**: Runs local ML (`en_core_web_sm` / spaCy) to securely perform Named Entity Recognition (Persons, Orgs, Dates, Money) in tandem with Gemini's overarching keyword extraction.
+- **Deep Entities (NER)**: Runs native LLM processing to deeply perform Named Entity Recognition (Persons, Orgs, Dates, Money, Locations) over text constraints.
 - **Sleek UX/UI**: Beautiful neon-glow backdrop filtered glass interfaces complete with dynamic load-step simulations that trace execution phases for judges/users.
 
 ---
@@ -36,15 +35,15 @@ The application pairs a highly modular, asynchronous **FastAPI backend** with a 
    - `pdfplumber` for structured PDF ingestion
    - `python-docx` for MS Office metadata & strings
    - `pytesseract` (Tesseract) for spatial OCR on images
-4. **NLP Processing (spaCy)**: Cleans text strings and enforces limits. Extracts named entities and deduplicates them using local execution.
-5. **Generative Processing (Gemini)**: Truncates data strictly to a 4,000-character ceiling to guarantee **sub-5-second execution times**, then bypasses blocking via asynchronous thread delegation to `gemini-2.5-flash`.
+4. **Text Cleaning**: Cleans text strings, bounds paragraphs, strips OCR noise, and enforces limits.
+5. **Generative Processing (Gemini)**: Truncates data strictly to a 4,000-character ceiling to guarantee **sub-5-second execution times**, then bypasses blocking via asynchronous thread delegation to `gemini-2.5-flash` for summary, sentiment, and entity extraction.
 6. **Delivery**: Returns a unified JSON Object merging ML and LLM findings instantly back to the dynamic dashboard.
 
 ---
 
 ## 💻 Tech Stack
 * **Language & Framework Backend**: Python 3.9+, FastAPI, Uvicorn
-* **AI & NLP Ecosystem**: `google-generativeai`, `spacy` (en_core_web_sm)
+* **AI Ecosystem**: `google-generativeai`
 * **Document Parsing**: `pdfplumber`, `python-docx`, `pytesseract`, `Pillow`
 * **Frontend Design**: HTML5, Vanilla JavaScript, CSS3 (Glassmorphism + Animations), FontAwesome 6 icons.
 * **Deployment System**: Docker-ready setup with Alpine/Slim configuration.
@@ -70,11 +69,8 @@ cd inteldoc-ai
 python -m venv venv
 # Windows: venv\Scripts\activate | Mac/Linux: source venv/bin/activate
 
-# Install dependencies (Installs FastAPI, Google GenAI, SpaCy, etc.)
+# Install dependencies
 pip install -r requirements.txt
-
-# Download required SpaCy NLP ML package
-python -m spacy download en_core_web_sm
 ```
 
 ### 3. Environment Variables (.env)
@@ -137,7 +133,7 @@ Connect your GitHub repository and build natively.
 *   **Environment:** `Python 3`
 *   **Build Command:** 
     ```bash
-    pip install -r requirements.txt && python -m spacy download en_core_web_sm
+    pip install -r requirements.txt
     ```
 *   **Start Command:** 
     ```bash
