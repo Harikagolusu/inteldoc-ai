@@ -95,9 +95,13 @@ async def analyze_document(file: UploadFile = File(None), _ = Depends(verify_api
         # 2. Clean Text
         cleaned_text = clean_extracted_text(raw_text)
         
-        # 3. Process Entities via Local ML (spaCy)
-        from src.services.nlp_service import extract_entities
-        nlp_entities = await extract_entities(cleaned_text)
+        # 3. Process Entities via Local ML (spaCy fallback)
+        nlp_entities = {}
+        try:
+            from src.services.nlp_service import extract_entities
+            nlp_entities = await extract_entities(cleaned_text)
+        except ImportError:
+            logger.info("Local ML components missing. Extracting entities dynamically via Gemini.")
         
         # 4. Process AI Summary, Sentiment, & Entities (Gemini)
         ai_result = await analyze_text(cleaned_text)
