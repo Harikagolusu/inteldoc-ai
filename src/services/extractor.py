@@ -2,7 +2,6 @@ import io
 import pdfplumber
 import docx
 import logging
-from src.services.ocr_service import extract_text_from_image
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +17,7 @@ async def extract_text_from_file(file_content: bytes, filename: str, content_typ
     elif content_type in ["application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/msword"] or lower_filename.endswith(".docx"):
         text = await _extract_docx(file_content)
     elif content_type.startswith("image/") or lower_filename.endswith((".png", ".jpg", ".jpeg")):
-        text = await extract_text_from_image(file_content)
+        return "Image text extraction not available"
     else:
         raise ValueError(f"Unsupported file type: {content_type}")
         

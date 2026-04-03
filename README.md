@@ -19,7 +19,7 @@ The application pairs a highly modular, asynchronous **FastAPI backend** with a 
 ---
 
 ## ✨ Key Features
-- **Universally Compatible Extraction**: Ingests `.pdf`, `.docx`, and `.jpg/.png` files. Utilizes Tesseract OCR for physical image text extraction.
+- **Universally Compatible Extraction**: Ingests `.pdf` and `.docx` files efficiently, while providing graceful parsing fallbacks for unsupported formats like `.jpg/.png` images.
 - **Smart Document Categorization**: Google Gemini natively evaluates context to classify your document (e.g., _Invoice, Resume, Report, Meeting Notes_).
 - **Executive Summaries & Sentiment**: Automatic reduction of wall-of-text documents into crisp 3-4 sentence AI summaries alongside psychological sentiment analysis (Positive/Neutral/Negative).
 - **Deep Entities (NER)**: Runs native LLM processing to deeply perform Named Entity Recognition (Persons, Orgs, Dates, Money, Locations) over text constraints.
@@ -34,7 +34,6 @@ The application pairs a highly modular, asynchronous **FastAPI backend** with a 
 3. **Extraction Layer**:
    - `pdfplumber` for structured PDF ingestion
    - `python-docx` for MS Office metadata & strings
-   - `pytesseract` (Tesseract) for spatial OCR on images
 4. **Text Cleaning**: Cleans text strings, bounds paragraphs, strips OCR noise, and enforces limits.
 5. **Generative Processing (Gemini)**: Truncates data strictly to a 4,000-character ceiling to guarantee **sub-5-second execution times**, then bypasses blocking via asynchronous thread delegation to `gemini-2.5-flash` for summary, sentiment, and entity extraction.
 6. **Delivery**: Returns a unified JSON Object merging ML and LLM findings instantly back to the dynamic dashboard.
@@ -44,7 +43,7 @@ The application pairs a highly modular, asynchronous **FastAPI backend** with a 
 ## 💻 Tech Stack
 * **Language & Framework Backend**: Python 3.9+, FastAPI, Uvicorn
 * **AI Ecosystem**: `google-generativeai`
-* **Document Parsing**: `pdfplumber`, `python-docx`, `pytesseract`, `Pillow`
+* **Document Parsing**: `pdfplumber`, `python-docx`, `Pillow`
 * **Frontend Design**: HTML5, Vanilla JavaScript, CSS3 (Glassmorphism + Animations), FontAwesome 6 icons.
 * **Deployment System**: Docker-ready setup with Alpine/Slim configuration.
 
@@ -53,10 +52,6 @@ The application pairs a highly modular, asynchronous **FastAPI backend** with a 
 ## 🚀 Getting Started
 ### 1. Prerequisites
 - Python 3.9+ installed on your machine.
-- [**Tesseract OCR**](https://tesseract-ocr.github.io/tessdoc/Installation.html): 
-  * Windows: Download the Executable Installer.
-  * Mac: `brew install tesseract`
-  * Linux: `sudo apt-get install tesseract-ocr`
 
 ### 2. Installation
 Clone the repository, then map and install your standard Python environment:
