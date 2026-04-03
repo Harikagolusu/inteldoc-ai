@@ -1,10 +1,13 @@
+--prefer-binary
 fastapi==0.110.0
 uvicorn==0.29.0
 python-multipart==0.0.9
 pdfplumber==0.11.0
 python-docx==1.1.0
 pytesseract==0.3.10
-spacy==3.7.4
+blis==0.7.11
+thinc==8.2.2
+spacy==3.7.2
 google-generativeai==0.4.1
 python-dotenv==1.0.1
 aiofiles==23.2.1
