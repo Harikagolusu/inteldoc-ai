@@ -79,7 +79,7 @@ API_KEY=sk_track2_987654321
 ### 4. Run the Application
 Start the Uvicorn ASGI server natively:
 ```bash
-uvicorn src.main:app --reload
+uvicorn main:app --reload
 ```
 Navigate to your browser at **`http://localhost:8000/`** to view the main Web App!
 
@@ -132,7 +132,7 @@ Connect your GitHub repository and build natively.
     ```
 *   **Start Command:** 
     ```bash
-    uvicorn src.main:app --host 0.0.0.0 --port 10000
+    uvicorn main:app --host 0.0.0.0 --port 10000
     ```
 
 **3. Configure Environment Variables:**
