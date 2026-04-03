@@ -95,8 +95,22 @@ async def analyze_document(file: UploadFile = File(None), _ = Depends(verify_api
         # 2. Clean Text
         cleaned_text = clean_extracted_text(raw_text)
         
-        # 3. Process AI Summary, Sentiment, & Entities (Gemini)
+        # 3. Process Entities via Local ML (spaCy)
+        from src.services.nlp_service import extract_entities
+        nlp_entities = await extract_entities(cleaned_text)
+        
+        # 4. Process AI Summary, Sentiment, & Entities (Gemini)
         ai_result = await analyze_text(cleaned_text)
+        gemini_entities = ai_result.get("entities", {})
+        
+        # Merge dictionaries intelligently eliminating dupes
+        merged_entities = {
+            "persons": list(set(nlp_entities.get("persons", [])) | set(gemini_entities.get("persons", []))),
+            "organizations": list(set(nlp_entities.get("organizations", [])) | set(gemini_entities.get("organizations", []))),
+            "dates": list(set(nlp_entities.get("dates", [])) | set(gemini_entities.get("dates", []))),
+            "money": list(set(nlp_entities.get("money", [])) | set(gemini_entities.get("money", []))),
+            "locations": list(set(nlp_entities.get("locations", [])) | set(gemini_entities.get("locations", [])))
+        }
         
         sentiment_val = str(ai_result.get("sentiment", "neutral")).lower()
         if sentiment_val not in ["positive", "negative", "neutral"]:
@@ -105,13 +119,7 @@ async def analyze_document(file: UploadFile = File(None), _ = Depends(verify_api
         return {
             "file_type": file_type_str,
             "summary": ai_result.get("summary", "Summary unavailable")[:500],
-            "entities": ai_result.get("entities", {
-                    "persons": [],
-                    "organizations": [],
-                    "dates": [],
-                    "money": [],
-                    "locations": []
-            }),
+            "entities": merged_entities,
             "sentiment": sentiment_val
         }
         
